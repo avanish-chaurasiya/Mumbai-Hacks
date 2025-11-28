@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truthlens - Real-Time Deepfake Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+
+    <header>
+        <nav class="container">
+            <a href="#home" class="logo">TruthLens</a>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tech">Technology</a></li>
+                <li><a href="#impact">Impact</a></li>
+            </ul>
+            <a href="http://127.0.0.1:5000" class="cta-button">Analyze Media</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="container">
+            <div class="hero-content">
+                <h1 class="fade-in">TruthLens</h1>
+                <p class="fade-in">An website for Social Good project designed to combat misinformation, identity theft, and fraud by detecting synthetic media in real-time. </p>
+                <a href="http://127.0.0.1:5000" class="cta-button hero-cta fade-in">Try The Detector</a>
+            </div>
+        </section>
+
+        <section id="about" class="container">
+            <div class="about-grid">
+                <div class="about-content hidden">
+                    <h2>The Challenge We're Solving </h2>
+                    <p>The rise of synthetic media has made it increasingly difficult to distinguish between authentic and manipulated content. Deepfakes threaten individuals and communities by enabling the spread of misinformation, reputational damage, and political propaganda. There is a critical need for tools that can flag deepfakes to protect our digital integrity.</p>
+                </div>
+                <div class="about-content hidden">
+                    <h2>Our Proposed Solution </h2>
+                    <p>We propose "TruthLens," an AI-powered system that detects deepfake videos and images in real-time. It uses a lightweight convolutional neural network (CNN) and long short-term memory (LSTM) model to analyze facial inconsistencies and manipulation artifacts. The solution is accessible through a user-friendly web interface and an API for platform integration.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="features" class="container">
+            <h2 class="hidden">Key Features </h2>
+            <div class="features-grid">
+                <div class="feature-card hidden">
+                    <h3><i class="fas fa-search"></i> Real-Time Detection</h3>
+                    <p>Detects deepfake videos and images in real-time. </p>
+                </div>
+                <div class="feature-card hidden">
+                    <h3><i class="fas fa-lightbulb"></i> Explainable Results</h3>
+                    <p>Provides explainable heatmaps showing tampered regions of the media. </p>
+                </div>
+                <div class="feature-card hidden">
+                    <h3><i class="fas fa-cogs"></i> Platform Integration</h3>
+                    <p>Can be integrated with third-party apps or social media via a REST API. </p>
+                </div>
+                <div class="feature-card hidden">
+                    <h3><i class="fas fa-server"></i> Optimized & Private</h3>
+                    <p>The model is optimized for low-resource environments and offers a privacy-focused local deployment option. </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tech" class="container">
+            <h2 class="hidden">Technology and Workflow</h2>
+            <div class="tech-grid">
+                <div class="tech-stack hidden">
+                    <h3>Technology Stack </h3>
+                    <ul>
+                        <li><strong>Model:</strong> TensorFlow, Keras, CNN-LSTM Architecture </li>
+                        <li><strong>Pipeline:</strong> OpenCV, MediaPipe </li>
+                        <li><strong>Web Interface:</strong> Flask and ReactJs </li>
+                        <li><strong>Dataset:</strong> Deepfake Detection Challenge, Celeb-DF </li>
+                        <li><strong>Visualization:</strong> Grad-CAM for visual explanations </li>
+                    </ul>
+                </div>
+                <div class="tech-stack hidden">
+                    <h3>Detection Flowchart </h3>
+                    <ul> <li>User inputs a video or image through the web interface. </li>
+                        <li>The Backend Flask API receives the content. </li>
+                        <li>A preprocessing module prepares the data for analysis. </li>
+                        <li>The Deepfake Detection Model analyzes the content. </li>
+                        <li>A prediction output and heatmap visualization are generated. </li>
+                        <li>The final results are sent back to the user. </li>
+                    </ul> </div>
+            </div>
+        </section>
+
+        <section id="impact" class="container">
+             <h2 class="hidden">Impact and Future Scope</h2>
+            <div class="impact-grid">
+                <div class="impact-card hidden">
+                    <h3>Potential Real-World Impact </h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Enables journalists and fact-checkers to verify content. </li>
+                        <li><i class="fas fa-check-circle"></i> Empowers individuals to assess the authenticity of media they encounter. </li>
+                        <li><i class="fas fa-check-circle"></i> Provides critical tools for law enforcement and digital forensics. </li>
+                        <li><i class="fas fa-check-circle"></i> Reduces the spread of harmful misinformation on social platforms. </li>
+                    </ul>
+                </div>
+                 <div class="impact-card hidden">
+                    <h3>Future Scope </h3>
+                    <ul>
+                        <li><i class="fas fa-rocket"></i> Integration with Android and iOS for mobile verification. </li>
+                        <li><i class="fas fa-rocket"></i> Extension to detect deepfake audio and synthetic voices. </li>
+                        <li><i class="fas fa-rocket"></i> Use behavioral facial recognition to enhance model accuracy. </li>
+                        <li><i class="fas fa-rocket"></i> Develop language-specific models for wider, global reach. </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 DeepGuard by Team WeCode. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
