@@ -28,3 +28,7 @@ Multimodal Input: Check both text claims and news screenshots together.
 Grounded Analysis: Uses live Google Search results for fact-checking.
 Factual Verdict: Gives a simple Real, Fake, or Misleading answer.
 Corrections & Sources: If it's fake, the tool gives you the true facts and links to the sources used for verification.
+
+
+<img width="966" height="482" alt="image" src="https://github.com/user-attachments/assets/7cf2ab3e-a2e7-462e-b9e7-4301f94d2233" />
+
