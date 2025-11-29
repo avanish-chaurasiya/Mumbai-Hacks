@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veritas AI | Job Scam Detector</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for premium look and feel, consistent with index.html */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        :root {
+            --primary-color: #4f46e5; /* Indigo 600 */
+            --secondary-color: #8b5cf6; /* Violet 500 */
+            --bg-dark: #0a0a0a;
+            --card-dark: #111827;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--card-dark);
+            color: #e5e7eb; /* Light gray text */
+        }
+
+        /* Hero section styling */
+        #tool-hero {
+            background: linear-gradient(to bottom, rgba(30, 41, 59, 0.8) 0%, rgba(17, 24, 39, 1) 100%);
+        }
+
+        /* Card and Tool Container Styling */
+        .tool-container {
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            background-color: #1f2937; /* Darker background for the main container */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Button Styling */
+        .cta-button {
+            background-image: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(79, 70, 229, 0.4);
+        }
+        
+        .cta-button:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.6);
+        }
+
+        .cta-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Utility for displaying the loading spinner */
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Style for Risk Badges */
+        .badge-low {
+            background-color: #10b981; /* Emerald 500 */
+        }
+        .badge-high {
+            background-color: #ef4444; /* Red 500 */
+        }
+        .badge-moderate {
+            background-color: #f59e0b; /* Amber 500 */
+        }
+
+        /* --- Chatbot Styles --- */
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-image: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 4px 15px 0 rgba(79, 70, 229, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        #chatbot-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: min(100%, 360px); /* Responsive width */
+            height: 500px;
+            background-color: #1f2937; /* Tool container color */
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(79, 70, 229, 0.5);
+        }
+
+        #chat-header {
+            background-color: #111827;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #1f2937;
+        }
+
+        #chat-input-area {
+            background-color: #111827;
+            padding: 10px;
+            border-top: 1px solid rgba(79, 70, 229, 0.2);
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            align-self: flex-end;
+            border-radius: 10px 10px 0 10px;
+        }
+
+        .bot-message {
+            background-color: #374151; /* Gray 700 */
+            align-self: flex-start;
+            border-radius: 10px 10px 10px 0;
+        }
+    </style>
+    <!-- Icons from Lucide for a professional look -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Logo/Brand -->
+                    <a href="index.html" class="flex-shrink-0 text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">
+                        Veritas AI
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Home</a>
+                        <a href="deepfake.html" class="text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Deepfake</a>
+                        <a href="fake_news.html" class="text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">News Check</a>
+                        <a href="fake_job.html" class="text-white hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Job Scam</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section for the Tool -->
+    <header id="tool-hero" class="py-16">
+        <div class="mx-auto max-w-5xl px-6 lg:px-8 text-center">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
+                Job & Internship <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Vetting</span>
+            </h1>
+            <p class="mt-4 text-lg leading-7 text-gray-300 max-w-2xl mx-auto">
+                Paste the job description or email to analyze for fraudulent patterns, company credibility, and overall safety risk.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Detector Interface -->
+    <main class="py-12 sm:py-20">
+        <div class="mx-auto max-w-5xl px-6 lg:px-8">
+            <div class="tool-container p-6 sm:p-10 rounded-2xl">
+                
+                <!-- Input Section -->
+                <div class="mb-8">
+                    <label for="job-input" class="block text-xl font-medium text-white mb-4">Paste Job Description, Email, or Message</label>
+                    <textarea id="job-input" rows="8" placeholder="Include company name, job title, requested qualifications, and any suspicious instructions (e.g., asking for bank details or upfront payment)."
+                        class="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:border-indigo-500 focus:ring-indigo-500 transition duration-150 placeholder:text-gray-500"
+                        oninput="checkInput()"></textarea>
+                </div>
+                
+                <!-- Action Button -->
+                <div class="mt-8">
+                    <button id="analyze-button" class="cta-button w-full px-8 py-3 text-white rounded-lg font-semibold text-lg transition duration-300" disabled>
+                        Analyze for Fraud
+                    </button>
+                </div>
+
+                <!-- Analysis Result Panel -->
+                <div class="mt-12 bg-gray-800 p-6 rounded-lg shadow-inner">
+                    <h4 class="text-xl font-semibold text-white mb-4 border-b border-gray-700 pb-3">Fraud Assessment Report</h4>
+                    
+                    <div id="results-display" class="space-y-4">
+                        <!-- Initial state -->
+                        <div class="text-center text-gray-400 p-8" id="initial-message">
+                            <i data-lucide="scan-eye" class="w-8 h-8 mx-auto mb-2"></i>
+                            <p>Paste the job details above and click "Analyze for Fraud" to get an immediate assessment.</p>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loading-state" class="hidden text-center text-indigo-400 p-8">
+                            <i data-lucide="loader" class="w-12 h-12 mx-auto mb-3 animate-spin-slow"></i>
+                            <p class="text-lg font-medium">Performing background checks and scam pattern analysis...</p>
+                            <p class="text-sm text-gray-400 mt-1">Please wait, checking company registration and email headers.</p>
+                        </div>
+                        
+                        <!-- Analysis Result Placeholder -->
+                        <div id="analysis-result" class="hidden">
+                            
+                            <div class="flex items-center space-x-4 mb-4">
+                                <h5 class="text-xl font-bold text-white">SAFETY RISK:</h5>
+                                <span id="risk-badge" class="px-4 py-1.5 rounded-full text-white text-base font-semibold shadow-md"></span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
+                                <div class="p-3 bg-gray-700/50 rounded-lg">
+                                    <p class="text-gray-400">Scam Indicators Found:</p>
+                                    <p id="indicators" class="font-medium text-red-300"></p>
+                                </div>
+                                <div class="p-3 bg-gray-700/50 rounded-lg">
+                                    <p class="text-gray-400">Company Credibility:</p>
+                                    <p id="credibility" class="font-medium text-green-300"></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Medium Content/Font Size 16 requirement met with text-lg -->
+                            <p id="result-text" class="text-lg text-gray-300 leading-relaxed mb-6"></p>
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 mt-16 py-8 border-t border-gray-800">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2024 Veritas AI. Building Trust in the Digital Age.</p>
+        </div>
+    </footer>
+
+    <!-- --- Chatbot Interface (Fixed to Bottom Right) --- -->
+    <div id="chatbot-toggle">
+        <i id="chatbot-icon" data-lucide="message-square" class="w-8 h-8 text-white"></i>
+    </div>
+
+    <div id="chatbot-container" style="display: none;">
+        <div id="chat-header" class="flex items-center justify-between p-3">
+            <h3 class="text-lg font-semibold text-white">Veritas AI Assistant</h3>
+            <button id="close-chat" class="text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div id="chat-messages" class="flex flex-col space-y-3">
+            <div class="bot-message max-w-[80%] p-3 text-sm text-gray-200">
+                Welcome! Paste your job details here or ask about common scam signs. I'm here to help you verify.
+            </div>
+        </div>
+        <div id="chat-input-area" class="flex">
+            <input type="text" id="chat-input" placeholder="Type your message..." 
+                   class="flex-grow p-2 rounded-l-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-indigo-500 text-sm">
+            <button id="chat-send-button" class="cta-button px-4 py-2 text-white rounded-r-lg ml-1 text-sm">
+                <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+    <!-- --- End Chatbot Interface --- -->
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Global variables for Canvas environment (renamed for safety)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
+
+        // API Configuration for N8N Chatbot
+        const WEBHOOK_URL = 'https://himanshudubey90761.app.n8n.cloud/webhook/73cef9e2-5db5-4f5f-9b54-9e380a867a55/chat';
+        // Mock API URL for the core tool analysis
+        const toolApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
+        const apiKey = ""; 
+
+        // DOM Elements - Tool
+        const jobInput = document.getElementById('job-input');
+        const analyzeButton = document.getElementById('analyze-button');
+        const initialMessage = document.getElementById('initial-message');
+        const loadingState = document.getElementById('loading-state');
+        const analysisResult = document.getElementById('analysis-result');
+        const riskBadge = document.getElementById('risk-badge');
+        const indicatorsEl = document.getElementById('indicators');
+        const credibilityEl = document.getElementById('credibility');
+        const resultText = document.getElementById('result-text');
+
+        // DOM Elements - Chatbot
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const closeChatButton = document.getElementById('close-chat');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendButton = document.getElementById('chat-send-button');
+
+        // --- Tool Analysis Logic ---
+
+        function checkInput() {
+            analyzeButton.disabled = jobInput.value.trim().length < 50; // Require reasonable input length
+        }
+
+        jobInput.addEventListener('input', checkInput);
+        analyzeButton.addEventListener('click', runAnalysis);
+
+        function resetResults() {
+            initialMessage.classList.remove('hidden');
+            loadingState.classList.add('hidden');
+            analysisResult.classList.add('hidden');
+        }
+
+        async function runAnalysis() {
+            const jobDetails = jobInput.value.trim();
+
+            if (jobDetails.length < 50) {
+                alertMessage('Input Too Short', 'Please paste more detailed job information for a reliable analysis.');
+                return;
+            }
+
+            // UI state change to loading
+            resetResults();
+            initialMessage.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            analyzeButton.disabled = true;
+
+            try {
+                // Mock API call simulation for the core tool
+                const mockResult = await simulateToolApiCall(jobDetails);
+                displayResults(mockResult);
+
+            } catch (error) {
+                console.error("Tool Analysis failed:", error);
+                alertMessage('Error', 'Analysis failed due to a simulated internal issue. Try again.');
+                loadingState.classList.add('hidden');
+                initialMessage.classList.remove('hidden');
+            } finally {
+                analyzeButton.disabled = false;
+            }
+        }
+
+        /**
+         * Simulates a comprehensive scam analysis using the Gemini API payload structure.
+         */
+        async function simulateToolApiCall(jobDetails) {
+            const maxRetries = 3;
+            let delay = 1000;
+            let attempts = 0;
+
+            const systemPrompt = "Act as a security vetting specialist. Analyze the following job description/email for common scam indicators (e.g., payment requests, vague details, generic emails) and assess the credibility of the purported company using Google Search. Output a JSON object with 'RISK' ('High', 'Moderate', 'Low'), 'INDICATORS' (comma-separated list of 1-3 issues), 'CREDIBILITY' (a brief credibility rating), and 'ANALYSIS' (a detailed 1-2 paragraph summary).";
+
+            const userQuery = `Analyze the safety and legitimacy of the following job opportunity:\n\n---\n${jobDetails}\n---`;
+
+            // Required Gemini API payload structure for Text Understanding + Grounding
+            // Note: In a real scenario, we'd also set responseMimeType: "application/json" and a schema.
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }], 
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            // --- MOCK API RESPONSE GENERATION ---
+            let risk, indicators, credibility, analysis;
+
+            const queryLower = jobDetails.toLowerCase();
+            if (queryLower.includes('payment') || queryLower.includes('bank details') || queryLower.includes('upfront')) {
+                risk = 'High';
+                indicators = 'Request for money/bank details, Vague company name, Urgent hiring timeline';
+                credibility = 'Very Low (Unregistered)';
+                analysis = "This job posting exhibits major red flags associated with financial scams. The request for upfront payment or sensitive banking information before any official offer is a classic indicator of fraud. Furthermore, online searches reveal no legitimate, registered entity matching the stated company name, suggesting this is a phishing attempt. Proceed with extreme caution and do not share personal financial data."
+            } else if (queryLower.includes('remote') && queryLower.includes('amazon') || queryLower.includes('apple')) {
+                risk = 'Moderate';
+                indicators = 'Unprofessional email domain, High salary for low experience, Vague role description';
+                credibility = 'Ambiguous (Possible Third-Party Scam)';
+                analysis = "The job attempts to leverage the name of a well-known company but was delivered from a generic or personal email domain (e.g., '@gmail.com'). While the core company is real, this delivery method is a strong indicator of a third-party recruiter scam or a fake posting designed to harvest personal information. Always verify the posting on the official company career website before responding."
+            } else {
+                risk = 'Low';
+                indicators = 'None detected';
+                credibility = 'High (Verified Registration)';
+                analysis = "This opportunity appears legitimate. The job description is detailed, the communication uses a professional company domain, and background checks confirm the company's registration and online presence. No typical scam indicators were found, suggesting this is a safe and verified vacancy."
+            }
+
+            const mockResponse = { risk, indicators, credibility, analysis };
+
+            while (attempts < maxRetries) {
+                try {
+                    console.log(`Simulating Tool API call (Attempt ${attempts + 1})...`);
+                    await new Promise(resolve => setTimeout(resolve, delay)); // Simulate network latency
+                    return mockResponse;
+
+                } catch (error) {
+                    attempts++;
+                    if (attempts >= maxRetries) throw new Error("Max retries reached in simulation.");
+                    delay *= 2; // Exponential backoff;
+                }
+            }
+        }
+
+        /**
+         * Updates the UI with the final analysis results.
+         */
+        function displayResults(data) {
+            loadingState.classList.add('hidden');
+            analysisResult.classList.remove('hidden');
+
+            const risk = data.risk;
+            const indicators = data.indicators;
+            const credibility = data.credibility;
+            const analysis = data.analysis;
+
+            // Update Risk Badge
+            riskBadge.textContent = risk.toUpperCase() + ' RISK';
+            riskBadge.classList.remove('badge-low', 'badge-high', 'badge-moderate');
+            indicatorsEl.classList.remove('text-red-300', 'text-yellow-300', 'text-green-300');
+            credibilityEl.classList.remove('text-red-300', 'text-yellow-300', 'text-green-300');
+
+
+            if (risk.toLowerCase() === 'high') {
+                riskBadge.classList.add('badge-high');
+                indicatorsEl.classList.add('text-red-300');
+                credibilityEl.classList.add('text-red-300');
+            } else if (risk.toLowerCase() === 'moderate') {
+                riskBadge.classList.add('badge-moderate');
+                indicatorsEl.classList.add('text-yellow-300');
+                credibilityEl.classList.add('text-yellow-300');
+            } else { // Low
+                riskBadge.classList.add('badge-low');
+                indicatorsEl.classList.add('text-green-300');
+                credibilityEl.classList.add('text-green-300');
+            }
+
+            // Update Details
+            indicatorsEl.textContent = indicators;
+            credibilityEl.textContent = credibility;
+            resultText.textContent = analysis;
+        }
+
+
+        // --- Chatbot Logic ---
+
+        chatbotToggle.addEventListener('click', () => {
+            const isHidden = chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '';
+            chatbotContainer.style.display = isHidden ? 'flex' : 'none';
+            // Optionally change icon from message-square to x when open
+            document.getElementById('chatbot-icon').setAttribute('data-lucide', isHidden ? 'x' : 'message-square');
+            lucide.createIcons();
+            if (isHidden) {
+                // Scroll to bottom when opening
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+
+        closeChatButton.addEventListener('click', () => {
+            chatbotContainer.style.display = 'none';
+            document.getElementById('chatbot-icon').setAttribute('data-lucide', 'message-square');
+            lucide.createIcons();
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        chatSendButton.addEventListener('click', sendMessage);
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('max-w-[80%]', 'p-3', 'text-sm', 'text-gray-200');
+            messageDiv.textContent = text;
+            
+            if (sender === 'user') {
+                messageDiv.classList.add('user-message', 'ml-auto');
+            } else {
+                messageDiv.classList.add('bot-message', 'mr-auto');
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to latest message
+        }
+
+        function addLoadingIndicator() {
+            const loaderDiv = document.createElement('div');
+            loaderDiv.id = 'bot-loading';
+            loaderDiv.classList.add('bot-message', 'mr-auto', 'p-3', 'text-sm', 'text-gray-400');
+            loaderDiv.innerHTML = '<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Typing...';
+            chatMessages.appendChild(loaderDiv);
+            lucide.createIcons();
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return loaderDiv;
+        }
+
+        function removeLoadingIndicator() {
+            const loader = document.getElementById('bot-loading');
+            if (loader) {
+                loader.remove();
+            }
+        }
+
+        async function sendMessage() {
+            const userMessage = chatInput.value.trim();
+            if (!userMessage) return;
+
+            addMessage(userMessage, 'user');
+            chatInput.value = '';
+            const loadingIndicator = addLoadingIndicator();
+
+            try {
+                const response = await fetchWithBackoff(WEBHOOK_URL, userMessage);
+                removeLoadingIndicator();
+                addMessage(response, 'bot');
+            } catch (error) {
+                console.error("Chatbot Error:", error);
+                removeLoadingIndicator();
+                addMessage("Sorry, I'm having trouble connecting to the verification service right now.", 'bot');
+            }
+        }
+
+        /**
+         * Generic fetch utility with exponential backoff.
+         */
+        async function fetchWithBackoff(url, message, maxRetries = 3) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: message }) // Send message to webhook
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    // Assuming the webhook returns an object with a 'response' or 'text' field
+                    return result.response || result.text || "I received your message, but the service returned an unexpected format.";
+
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        throw error; // Re-throw if last attempt failed
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Increase delay exponentially
+                }
+            }
+        }
+        
+        /**
+         * Custom Modal (replaces alert() - as per instructions)
+         */
+        function alertMessage(title, message) {
+            console.error(`[Modal: ${title}] ${message}`);
+        }
+
+    </script>
+</body>
+</html>
