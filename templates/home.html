@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veritas AI Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #0d1117;
+        color: #c9d1d9;
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+    }
+    .dashboard-card {
+        background: #161b22;
+        border-radius: 15px;
+        border: 1px solid #30363d;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        color: #c9d1d9;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    .card-icon {
+        font-size: 2.5rem;
+        color: #2575fc;
+        margin-bottom: 1rem;
+    }
+    h1, h3 {
+        color: #ffffff;
+    }
+    .form-control {
+        background-color: rgba(255,255,255,0.05);
+        color: #fff;
+        border: 1px solid #30363d;
+    }
+    .btn-outline-primary, .btn-outline-danger, .btn-outline-success {
+        color: #fff;
+        border-color: #2575fc;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-primary:hover, .btn-outline-danger:hover, .btn-outline-success:hover {
+        background-color: #2575fc;
+        border-color: #2575fc;
+        box-shadow: 0 0 10px #2575fc;
+    }
+    .btn-secondary {
+        background-color: #30363d;
+        border: 1px solid #c9d1d9;
+    }
+</style>
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3"><i class="fas fa-robot"></i> Veritas AI</h1>
+            <p class="lead">Analyze media files for potential deepfake content</p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 text-center">
+                    <i class="fas fa-image card-icon"></i>
+                    <h3>Image Analysis</h3>
+                    <form action="/upload-image" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" class="form-control mb-3" required>
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="fas fa-search"></i> Analyze Image
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 text-center">
+                    <i class="fas fa-video card-icon"></i>
+                    <h3>Video Analysis</h3>
+                    <form action="/upload-video" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" class="form-control mb-3" required>
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-film"></i> Analyze Video
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 text-center">
+                    <i class="fas fa-camera card-icon"></i>
+                    <h3>Live Detection</h3>
+                    <p class="text-muted mb-3">Real-time webcam analysis</p>
+                    <a href="/live-video" class="btn btn-outline-success">
+                        <i class="fas fa-play"></i> Start Camera
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/logout" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>
