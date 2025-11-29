@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veritas AI | News Veracity Check</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for premium look and feel, consistent with index.html */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        :root {
+            --primary-color: #4f46e5; /* Indigo 600 */
+            --secondary-color: #8b5cf6; /* Violet 500 */
+            --bg-dark: #0a0a0a;
+            --card-dark: #111827;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--card-dark);
+            color: #e5e7eb; /* Light gray text */
+        }
+
+        /* Hero section styling (for the top part of the tool page) */
+        #tool-hero {
+            background: linear-gradient(to bottom, rgba(30, 41, 59, 0.8) 0%, rgba(17, 24, 39, 1) 100%);
+        }
+
+        /* Card and Tool Container Styling */
+        .tool-container {
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            background-color: #1f2937; /* Darker background for the main container */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Upload Area Styling */
+        .upload-area {
+            border: 2px dashed rgba(79, 70, 229, 0.5);
+            transition: all 0.2s ease;
+            background-color: #1f2937;
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--primary-color);
+            background-color: #2a3341;
+        }
+
+        /* Button Styling */
+        .cta-button {
+            background-image: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(79, 70, 229, 0.4);
+        }
+        
+        .cta-button:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.6);
+        }
+
+        .cta-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Utility for displaying the loading spinner */
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Style for Verdict Badges */
+        .badge-true {
+            background-color: #10b981; /* Emerald 500 */
+        }
+        .badge-fake {
+            background-color: #ef4444; /* Red 500 */
+        }
+        .badge-misleading {
+            background-color: #f59e0b; /* Amber 500 */
+        }
+    </style>
+    <!-- Icons from Lucide for a professional look -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Logo/Brand -->
+                    <a href="index.html" class="flex-shrink-0 text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">
+                        Veritas AI
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Home</a>
+                        <a href="deepfake.html" class="text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Deepfake</a>
+                        <a href="fake_news.html" class="text-white hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">News Check</a>
+                        <a href="fake_job.html" class="text-gray-300 hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Job Scam</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section for the Tool -->
+    <header id="tool-hero" class="py-16">
+        <div class="mx-auto max-w-5xl px-6 lg:px-8 text-center">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
+                News <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Veracity</span> Check
+            </h1>
+            <p class="mt-4 text-lg leading-7 text-gray-300 max-w-2xl mx-auto">
+                Verify claims, detect misinformation, and find grounded facts by analyzing text or news screenshots using real-time web search.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Detector Interface -->
+    <main class="py-12 sm:py-20">
+        <div class="mx-auto max-w-5xl px-6 lg:px-8">
+            <div class="tool-container p-6 sm:p-10 rounded-2xl">
+                
+                <!-- Input Section -->
+                <div class="mb-8">
+                    <label for="claim-input" class="block text-xl font-medium text-white mb-4">Enter News Claim or Text to Verify</label>
+                    <textarea id="claim-input" rows="4" placeholder="Example: 'A new study proves that pineapple belongs on pizza.'"
+                        class="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:border-indigo-500 focus:ring-indigo-500 transition duration-150 placeholder:text-gray-500"
+                        oninput="checkInputs()"></textarea>
+                </div>
+
+                <div class="relative flex items-center justify-center my-6">
+                    <div class="flex-grow border-t border-gray-700"></div>
+                    <span class="flex-shrink mx-4 text-gray-500 text-sm font-medium uppercase">or upload screenshot</span>
+                    <div class="flex-grow border-t border-gray-700"></div>
+                </div>
+                
+                <!-- Image Upload (Optional) -->
+                <div class="mb-10">
+                    <label for="file-upload" class="block text-lg font-medium text-white mb-2">Upload News Screenshot (Optional)</label>
+                    
+                    <div id="drop-area" class="upload-area flex flex-col items-center justify-center p-6 rounded-xl cursor-pointer">
+                        <input id="file-upload" type="file" class="hidden" accept="image/jpeg, image/png">
+                        <i data-lucide="image-up" class="w-8 h-8 text-indigo-400 mb-2"></i>
+                        <p class="text-base font-semibold text-gray-300">Drag & drop or <span class="text-indigo-400 hover:text-indigo-300">browse file</span></p>
+                        <p id="file-name" class="text-sm text-gray-500 mt-1 italic">No file selected. Max 5MB.</p>
+                    </div>
+
+                    <p id="image-hint" class="mt-3 text-sm text-gray-500">
+                        Uploading an image will analyze the visual content and attempt to OCR the text.
+                    </p>
+                </div>
+                
+                <!-- Action Button -->
+                <div class="mt-8">
+                    <button id="analyze-button" class="cta-button w-full px-8 py-3 text-white rounded-lg font-semibold text-lg transition duration-300" disabled>
+                        Verify Information
+                    </button>
+                </div>
+
+                <!-- Analysis Result Panel -->
+                <div class="mt-12 bg-gray-800 p-6 rounded-lg shadow-inner">
+                    <h4 class="text-xl font-semibold text-white mb-4 border-b border-gray-700 pb-3">Fact-Checking Report</h4>
+                    
+                    <div id="results-display" class="space-y-4">
+                        <!-- Initial state -->
+                        <div class="text-center text-gray-400 p-8" id="initial-message">
+                            <i data-lucide="search-code" class="w-8 h-8 mx-auto mb-2"></i>
+                            <p>Enter a claim or upload a news screenshot above to begin verification.</p>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loading-state" class="hidden text-center text-indigo-400 p-8">
+                            <i data-lucide="loader" class="w-12 h-12 mx-auto mb-3 animate-spin-slow"></i>
+                            <p class="text-lg font-medium">Verifying against grounded sources...</p>
+                            <p class="text-sm text-gray-400 mt-1">Please wait for the real-time web analysis.</p>
+                        </div>
+                        
+                        <!-- Analysis Result Placeholder -->
+                        <div id="analysis-result" class="hidden">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <h5 class="text-xl font-bold text-white">VERDICT:</h5>
+                                <span id="verdict-badge" class="px-4 py-1.5 rounded-full text-white text-base font-semibold shadow-md"></span>
+                            </div>
+                            
+                            <!-- Medium Content/Font Size 16 Requirement met with text-lg -->
+                            <p id="result-text" class="text-lg text-gray-300 leading-relaxed mb-6"></p>
+                            
+                            <div class="p-4 rounded-lg border border-gray-700 bg-gray-900">
+                                <p class="text-base font-semibold text-indigo-300 mb-2">Grounded Context and Real News:</p>
+                                <ul id="sources-list" class="list-disc list-inside space-y-2 text-gray-400 text-sm pl-4">
+                                    <!-- Sources will be dynamically added here -->
+                                </ul>
+                                <p id="no-sources" class="text-sm text-gray-500 hidden italic">No specific web sources were available for cross-referencing this claim.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 mt-16 py-8 border-t border-gray-800">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2024 Veritas AI. Building Trust in the Digital Age.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Global variables for Canvas environment (renamed for safety)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
+
+        // API Configuration 
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // DOM Elements
+        const claimInput = document.getElementById('claim-input');
+        const fileUpload = document.getElementById('file-upload');
+        const dropArea = document.getElementById('drop-area');
+        const fileNameDisplay = document.getElementById('file-name');
+        const analyzeButton = document.getElementById('analyze-button');
+        const initialMessage = document.getElementById('initial-message');
+        const loadingState = document.getElementById('loading-state');
+        const analysisResult = document.getElementById('analysis-result');
+        const verdictBadge = document.getElementById('verdict-badge');
+        const resultText = document.getElementById('result-text');
+        const sourcesList = document.getElementById('sources-list');
+        const noSources = document.getElementById('no-sources');
+
+        let uploadedFile = null;
+        let base64ImageData = null;
+
+        // --- Input Handling and Validation ---
+
+        function checkInputs() {
+            const hasText = claimInput.value.trim().length > 0;
+            const hasImage = uploadedFile !== null;
+            analyzeButton.disabled = !(hasText || hasImage);
+        }
+
+        claimInput.addEventListener('input', checkInputs);
+
+        // --- File Upload Logic ---
+
+        fileUpload.addEventListener('change', handleFiles);
+        dropArea.addEventListener('click', () => fileUpload.click());
+
+        // Drag and drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
+        });
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } });
+        }
+
+        function handleFiles(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                alertMessage('Error', 'Please upload a valid image file (JPG or PNG).');
+                return;
+            }
+
+            uploadedFile = file;
+            fileNameDisplay.textContent = uploadedFile.name;
+            checkInputs();
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Store base64 data for API use
+                base64ImageData = e.target.result.split(',')[1];
+            };
+            reader.readAsDataURL(file);
+            
+            resetResults();
+        }
+
+        // --- Analysis (Mock API Call) Logic ---
+
+        analyzeButton.addEventListener('click', runAnalysis);
+
+        function resetResults() {
+            initialMessage.classList.remove('hidden');
+            loadingState.classList.add('hidden');
+            analysisResult.classList.add('hidden');
+            sourcesList.innerHTML = '';
+            noSources.classList.add('hidden');
+        }
+
+        async function runAnalysis() {
+            const textQuery = claimInput.value.trim();
+            const hasImage = uploadedFile !== null;
+
+            if (!textQuery && !hasImage) {
+                alertMessage('Input Required', 'Please enter a text claim or upload an image to verify.');
+                return;
+            }
+
+            // UI state change to loading
+            resetResults();
+            initialMessage.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            analyzeButton.disabled = true;
+
+            try {
+                const mockResult = await simulateApiCall(textQuery, hasImage);
+                displayResults(mockResult);
+
+            } catch (error) {
+                console.error("Analysis failed:", error);
+                alertMessage('Error', 'Analysis failed due to a simulated network issue or model error. Try again.');
+                loadingState.classList.add('hidden');
+                initialMessage.classList.remove('hidden');
+            } finally {
+                analyzeButton.disabled = false;
+            }
+        }
+
+        /**
+         * Simulates a network call with exponential backoff and returns a mock analysis result.
+         * This function mimics calling Gemini with Search Grounding and/or Image Understanding.
+         */
+        async function simulateApiCall(textQuery, hasImage) {
+            const maxRetries = 3;
+            let delay = 1000;
+            let attempts = 0;
+
+            const systemPrompt = "Act as a neutral fact-checker. Verify the user's claim or the content of the provided image/screenshot against real-time web data using Google Search. Your output must determine the VERDICT ('True', 'Fake', or 'Misleading') and provide a 'CONTEXT' (a medium-length, 1-2 paragraph analysis). Do not include any score or percentage.";
+            
+            const parts = [];
+            if (hasImage) {
+                // Add instructions for image interpretation
+                parts.push({ text: `Analyze this news screenshot/image for the primary claim it makes. Then, verify that claim against current web sources: ${textQuery}` });
+                parts.push({
+                    inlineData: {
+                        mimeType: uploadedFile.type, 
+                        data: base64ImageData || 'mock_base64_data'
+                    }
+                });
+            } else {
+                parts.push({ text: `Verify the following news claim: ${textQuery}` });
+            }
+
+            // The required Gemini API payload structure for Text/Image Understanding + Grounding
+            const payload = {
+                contents: [{ role: "user", parts: parts }],
+                tools: [{ "google_search": {} }], // Enable grounding
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            // --- MOCK API RESPONSE GENERATION ---
+            // In a real app, you'd fetch from `apiUrl` with `payload`.
+            
+            let verdict, analysisText;
+
+            // Simple mock logic based on query or random chance
+            const queryLower = textQuery.toLowerCase();
+            if (queryLower.includes('true') || queryLower.includes('real') || queryLower.includes('fact')) {
+                verdict = 'True';
+                analysisText = "Multiple credible sources corroborate the user's claim. Key details align with official reports and widely published data. The claim is well-supported by evidence found in the latest search results.";
+            } else if (queryLower.includes('fake') || queryLower.includes('lie') || queryLower.includes('debunked')) {
+                verdict = 'Fake';
+                analysisText = "This claim is demonstrably false. Search results indicate it originated from a satire site or has been widely debunked by independent fact-checking organizations. Reliable sources contradict the core assertion.";
+            } else {
+                verdict = ['True', 'Fake', 'Misleading'][Math.floor(Math.random() * 3)];
+                if (verdict === 'Misleading') {
+                    analysisText = "The claim contains elements of truth but lacks crucial context or uses highly selective data. While the core event may be real, the interpretation or conclusion presented is highly biased or inaccurate, leading to a misleading narrative.";
+                } else if (verdict === 'True') {
+                    analysisText = "The core assertion is accurate and verified by several news outlets. The search results show consistency across different journalistic bodies, confirming the veracity of the information presented.";
+                } else {
+                    analysisText = "This information is entirely unsubstantiated. There are no search results from reputable sources to support this claim, and it appears to be entirely fictional or based on a misinterpretation of an unrelated event.";
+                }
+            }
+
+            // Mock Grounding Sources
+            const mockSources = [
+                { title: `${verdict} - Official Source Verification`, uri: "https://example.com/source1" },
+                { title: `Contextual Report: ${verdict}`, uri: "https://example.com/source2" },
+                { title: "Veritas AI Fact-Check Database", uri: "https://example.com/source3" }
+            ].slice(0, Math.floor(Math.random() * 4)); // 0 to 3 sources
+
+            // Simulate the LLM structured output
+            const mockResponseText = `VERDICT: ${verdict}\nCONTEXT: ${analysisText}`;
+            
+            while (attempts < maxRetries) {
+                try {
+                    console.log(`Simulating API call (Attempt ${attempts + 1})...`);
+                    await new Promise(resolve => setTimeout(resolve, delay)); // Simulate network latency
+
+                    // Return the mock structure matching what we need for display
+                    return {
+                        text: mockResponseText,
+                        sources: mockSources // Mock citations
+                    };
+
+                } catch (error) {
+                    attempts++;
+                    if (attempts >= maxRetries) throw new Error("Max retries reached in simulation.");
+                    delay *= 2; // Exponential backoff
+                }
+            }
+        }
+
+        /**
+         * Updates the UI with the final analysis results and citations.
+         */
+        function displayResults(data) {
+            loadingState.classList.add('hidden');
+            analysisResult.classList.remove('hidden');
+
+            const resultParts = data.text.split('\nCONTEXT:');
+            const verdict = resultParts[0].replace('VERDICT: ', '').trim();
+            const context = resultParts[1].trim();
+            const sources = data.sources;
+
+            // Update Verdict Badge
+            verdictBadge.textContent = verdict.toUpperCase();
+            verdictBadge.classList.remove('badge-true', 'badge-fake', 'badge-misleading');
+            if (verdict.toLowerCase() === 'true') {
+                verdictBadge.classList.add('badge-true');
+            } else if (verdict.toLowerCase() === 'fake') {
+                verdictBadge.classList.add('badge-fake');
+            } else { // Misleading or ambiguous
+                verdictBadge.classList.add('badge-misleading');
+            }
+
+            // Update Context Text (medium content, font size 16)
+            resultText.textContent = context;
+            
+            // Update Sources
+            sourcesList.innerHTML = '';
+            if (sources && sources.length > 0) {
+                sources.forEach(source => {
+                    const li = document.createElement('li');
+                    li.classList.add('hover:text-white', 'transition');
+                    li.innerHTML = `<a href="${source.uri}" target="_blank" class="flex items-center space-x-2">
+                        <span>${source.title}</span>
+                        <i data-lucide="external-link" class="w-4 h-4 text-indigo-400"></i>
+                    </a>`;
+                    sourcesList.appendChild(li);
+                });
+                noSources.classList.add('hidden');
+            } else {
+                noSources.classList.remove('hidden');
+            }
+            
+            lucide.createIcons(); // Re-render icons
+        }
+
+        /**
+         * Custom Modal (replaces alert() - as per instructions)
+         */
+        function alertMessage(title, message) {
+            // Simple console logging for this environment, replacing the forbidden alert()
+            console.error(`[Modal: ${title}] ${message}`);
+
+            // A more complete implementation would dynamically create a div overlay.
+        }
+
+    </script>
+</body>
+</html>
